@@ -1,0 +1,34 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ '8.3', '8.4' ]
+
+    name: PHP ${{ matrix.php-versions }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl
+
+      - name: Install composer dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-suggest --no-progress
+
+      - name: Execute static analysis
+        run: composer analyse
+
+      - name: Execute tests via PHPUnit
+        run: composer test:no-coverage
+
+      - name: Check code style
+        run: composer code-style:check
