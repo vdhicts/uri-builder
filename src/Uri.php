@@ -253,7 +253,7 @@ class Uri implements Stringable
                 fn (Str $stringable) => $stringable
                     ->append('?')
                     ->append(implode('&', array_map(
-                        static fn (Parameter $parameter): string => $parameter->toString(),
+                        static fn (Parameter $parameter): string => $parameter->build(),
                         $this->getQueryParameters()
                     )))
             )
